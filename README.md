@@ -1,4 +1,6 @@
-## Welcome to GitHub Pages
+# HIYA LING 539!!!!! 
+
+## I need to figure out how to actually have the homepage direct to index.html, but here we are! She's aliiiiive!
 
 You can use the [editor on GitHub](https://github.com/sarahstueve/sarahstueve.github.io/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
 
