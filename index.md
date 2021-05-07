@@ -12,10 +12,12 @@ The required dependencies I am using for this tutorial are as follows:
 * [gensim](https://radimrehurek.com/gensim/) which can be installed using ``pip install gensim``
 * spaCy which can be installed via directions [here](https://spacy.io/usage)
 
+### Working with Stanza
+
 Once you have the dependencies installed, let's start working with Stanza. Download the English model, including CONLL03 (this might take a minute): 
-`python 
+```python 
 stanza.download(lang="en",package=None,processors={"ner":"conll03"})
-`
+```
 One of the key features of Stanza is that it provides models for 66 different languages, you simply have to download the model that you’re interested in.
 
 Next, create a pipeline. We’re going to select a series of processors – one for tokenization, one for lemmatization, and one for named entity recognition (ner)
@@ -24,6 +26,7 @@ nlp = stanza.Pipeline('en', processors = {'ner':'conll03', 'tokenize':'spacy', '
 ```
 To make sure our Pipeline is working correctly, let’s try an example to see what this can do!  
 We pass the text we want to be processed to the Pipeline we just created and then we can access and use attributes:
+
 ```python
 doc = nlp('Barack Obama was born in Hawaii.')
 # traverse over sentences in the document to access word/token info
@@ -66,7 +69,10 @@ in in O
 Hawaii Hawaii S-LOC
 . . O
 ```
+
 Now that we’ve seen what Stanza can do, let’s apply it to a problem of predicting propaganda in news articles.
+
+### Applying Stanza to propaganda
 
 The dataset we’ll be using is the Proppy corpus which can be found [here](https://zenodo.org/record/3271522#.YGk7lK9KhPY).
 
@@ -86,9 +92,11 @@ def read_data_prop(fname):
         prop = pkl.load(fp)[['article_text', 'source_URL', 'propaganda_label']]
     return prop
 ```
+
 This function loads the exact pandas DataFrame as it was organized when the data was pickled.
 
 From there, it’s time to apply Stanza to the data.
+
 ```python
 def process_data(fname, num_docs = 10):
     # now let's load the propaganda data
@@ -107,8 +115,8 @@ def process_data(fname, num_docs = 10):
             labels.append(data_dict[key]['propaganda_label'])
     return sample_dicts, labels
 ```
-For this problem, I am applying the Stanza model to text from each of the sampled articles. In the case of this implementation, when I called the function I set the number of training docs to 200, which worked out to 2000 training samples after 10 sentences were selected. The tokenizer being used by Stanza here is the spaCy tokenizer, which is one of the SOA tokenizers currently available. For each sentence segmented by the model, I can access each of the token values individually and also create lists of the tokens together. The function returns a sample dictionary, one for every document (though the dictionaries wound up being unnecessary) and a label list that contains the correct propaganda label from the document which the training sentence was pulled.
 
+For this problem, I am applying the Stanza model to text from each of the sampled articles. In the case of this implementation, when I called the function I set the number of training docs to 200, which worked out to 2000 training samples after 10 sentences were selected. The tokenizer being used by Stanza here is the spaCy tokenizer, which is one of the SOA tokenizers currently available. For each sentence segmented by the model, I can access each of the token values individually and also create lists of the tokens together. The function returns a sample dictionary, one for every document (though the dictionaries wound up being unnecessary) and a label list that contains the correct propaganda label from the document which the training sentence was pulled.
 
 
 
