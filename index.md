@@ -24,7 +24,7 @@ nlp = stanza.Pipeline('en', processors = {'ner':'conll03', 'tokenize':'spacy', '
 ```
 To make sure our Pipeline is working correctly, let’s try an example to see what this can do!  
 We pass the text we want to be processed to the Pipeline we just created and then we can access and use attributes:
-```python
+``python
 doc = nlp('Barack Obama was born in Hawaii.')
 # traverse over sentences in the document to access word/token info
 print(doc.text)
@@ -33,7 +33,7 @@ for sent in doc.sentences:
     print(sent.ents)
     for word, token in zip(sent.words, sent.tokens):
         print(word.text, word.lemma, token.ner)
-```
+``
 ```
 Barack Obama was born in Hawaii.
 [{
