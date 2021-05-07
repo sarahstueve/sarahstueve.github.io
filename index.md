@@ -22,7 +22,7 @@ One of the key features of Stanza is that it provides models for 66 different la
 
 Next, create a pipeline. We’re going to select a series of processors – one for tokenization, one for lemmatization, and one for named entity recognition (ner)
 ```python
-nlp = stanza.Pipeline('en', processors = {'ner':'conll03', 'tokenize':'spacy', 'lemma':'spacy'})
+nlp = stanza.Pipeline('en', processors = {'ner':'conll03', 'tokenize':'spacy', 'lemma':'default'})
 ```
 To make sure our Pipeline is working correctly, let’s try an example to see what this can do!  
 We pass the text we want to be processed to the Pipeline we just created and then we can access and use attributes:
@@ -116,9 +116,54 @@ def process_data(fname, num_docs = 10):
     return sample_dicts, labels
 ```
 
-For this problem, I am applying the Stanza model to text from each of the sampled articles. In the case of this implementation, when I called the function I set the number of training docs to 200, which worked out to 2000 training samples after 10 sentences were selected. The tokenizer being used by Stanza here is the spaCy tokenizer, which is one of the SOA tokenizers currently available. For each sentence segmented by the model, I can access each of the token values individually and also create lists of the tokens together. The function returns a sample dictionary, one for every document (though the dictionaries wound up being unnecessary) and a label list that contains the correct propaganda label from the document which the training sentence was pulled.
+For this problem, I applied\ the Stanza model to text from each of the sampled articles. In the case of this implementation, when I called the function to process articles with spacy I set the number of training docs (articles) to 200, which worked out to 2000 training samples or "documents" after 10 sentences were selected frrom eeach. The tokenizer being used by Stanza here is the spaCy tokenizer, which is one of the SOA tokenizers currently available. For each sentence segmented by the model, I can access each of the token values individually and also create lists of the tokens together. The function returns a sample dictionary, one for every document (though the dictionaries wound up being unnecessary) and a label list that contains the correct propaganda label from the document which the training sentence was pulled.
 
 
+Once the data has been preprocessed into a workable format, we can use the [Doc2Vec](https://radimrehurek.com/gensim/models/doc2vec.html) embedding model to generate sentence-level embeddings of the sampled sentences/documents from the articles. The propaganda vs non-propaganda labels can also be encoded using scikit-learn's [LabelEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html).
 
+```python
+def doc2vec(sample_dicts):
+    vocab = {}
+    id_count = 0
+    tagged_docs = []
+    for doc in sample_dicts:
+        tokens = []
+        tags = []
+        for token in doc['text']:
+            tokens.append(token.text)
+            if token.text not in vocab:
+                vocab[token.text] = id_count
+                tags.append(id_count)
+            else:
+                tags.append(vocab[token.text])
+            id_count += 1
+        tagged_docs.append(TaggedDocument(tokens, tags))
+
+    # convert tokens to doc2vec embeddings
+    embedding = Doc2Vec(tagged_docs, min_count=1, window=2)
+    features = []
+    for doc in tagged_docs:
+        # print(embedding.infer_vector(doc.words))
+        features.append(embedding.infer_vector(doc.words))
+        # features.append({'tokens': embedding.wv, 'source':doc['source']})
+    return features
+
+def encode_labels(labels):
+    encoder = LabelEncoder()
+    labels_trans = encoder.fit_transform(labels)
+    return labels_trans
+```
+
+Once the documents and labels are encoded, we can train a classifier to predict propagandistic vs non-propagandistic.
+
+```python
+# train and test classifier
+model = LogisticRegression()
+model.fit(features, labels)
+predictions = model.predict(dev_vecs)
+print("f1-score:", f1_score(dev_labels, predictions))
+```
+
+While logistic regression, in this implementation, did not perform well on these documents, there are plenty of other classification options to choose from. (It also probably didn't work because of the struggles I had getting this tutorial to work 🙃. However, Stanza is a very powerful natural language processing tool that has many use - particularly for the analysis of different languages, given it's breadth of language parsers. Future work for this project hopes to attempt to conduct entity-level sentiment analysis for propagandistic vs non-propagandistic documents to determine differences in language used in propaganda vs non-propaganda.
 
 
