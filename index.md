@@ -8,7 +8,7 @@ Before we get started, make sure you have the correct packages installed. I trie
 
 The required dependencies I am using for this tutorial are as follows:
 * Anaconda Python, or at least packages: pickle, pandas, sklearn, numpy
-* Stanza which can be downloaded [here](https://stanfordnlp.github.io/stanza/installation_usage.html![image](https://user-images.githubusercontent.com/34466941/117510043-31034e00-af40-11eb-9d85-c06f2135a54b.png)
+* Stanza which can be downloaded [here](https://stanfordnlp.github.io/stanza/installation_usage.html).
 * gensim which can be installed using ``pip install gensim``
 
 
