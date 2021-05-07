@@ -1,8 +1,8 @@
-## Hello this is Sarah's webpage!
+## Hello this is Sarah Stueve's webpage!
 ### I plan on adding more content here eventually, but for now, hi LING 539. Here is my technical tutorial for Stanza.
 
 # Classifying Propaganda with Stanza and gensim Doc2Vec
-### Sarah Stueve
+### Installing Dependencies
 
 Before we get started, make sure you have the correct packages installed. I tried to create a Docker container that runs Anaconda Python, but I was unable to completely do this correctly. The image is tagged at sarahstueve/stanza_tutorial.
 
@@ -13,9 +13,9 @@ The required dependencies I am using for this tutorial are as follows:
 * spaCy which can be installed via directions [here](https://spacy.io/usage)
 
 Once you have the dependencies installed, let's start working with Stanza. Download the English model, including CONLL03 (this might take a minute): 
-```python 
+`python 
 stanza.download(lang="en",package=None,processors={"ner":"conll03"})
-```
+`
 One of the key features of Stanza is that it provides models for 66 different languages, you simply have to download the model that you’re interested in.
 
 Next, create a pipeline. We’re going to select a series of processors – one for tokenization, one for lemmatization, and one for named entity recognition (ner)
@@ -24,7 +24,7 @@ nlp = stanza.Pipeline('en', processors = {'ner':'conll03', 'tokenize':'spacy', '
 ```
 To make sure our Pipeline is working correctly, let’s try an example to see what this can do!  
 We pass the text we want to be processed to the Pipeline we just created and then we can access and use attributes:
-``python
+```python
 doc = nlp('Barack Obama was born in Hawaii.')
 # traverse over sentences in the document to access word/token info
 print(doc.text)
@@ -33,7 +33,7 @@ for sent in doc.sentences:
     print(sent.ents)
     for word, token in zip(sent.words, sent.tokens):
         print(word.text, word.lemma, token.ner)
-``
+```
 ```
 Barack Obama was born in Hawaii.
 [{
