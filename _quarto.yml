@@ -3,12 +3,13 @@ project:
   output-dir: docs
 
 website:
-  title: "today"
+  title: "SARAH STUEVE"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: Tutorials
 
 format:
   html:
