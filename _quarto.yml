@@ -10,6 +10,9 @@ website:
         text: Home
       - href: about.qmd
         text: Tutorials
+    right: 
+      - icon: github
+        href: https://github.com/sarahstueve
 
 format:
   html:
